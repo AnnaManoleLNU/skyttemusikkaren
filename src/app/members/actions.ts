@@ -9,13 +9,27 @@ export async function logout() {
   redirect("/login");
 }
 
-export async function createPost(data: FormData) {
+export async function createPost(formData: FormData) {
   const supabase = await createClient();
-  const title = data.get("title") as string;
-  const body = data.get("body") as string;
 
-  const { error } = await supabase.from("posts").insert({ title, body });
-  console.log("Post creation result:", { title, body, error }); // Log the result for debugging
+  const title = formData.get("title")?.toString().trim();
+  const body = formData.get("body")?.toString().trim();
+
+  if (!title || !body) {
+    throw new Error("Title and body are required");
+  }
+
+  const { data: authData } = await supabase.auth.getUser();
+
+  if (!authData.user) {
+    throw new Error("Not authenticated");
+  }
+
+  const { error } = await supabase.from("posts").insert({
+    title,
+    body,
+    created_by: authData.user.id,
+  });
 
   if (error) {
     console.error("Error creating post:", error);
