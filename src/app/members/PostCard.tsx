@@ -12,6 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { PromiseForm } from "@/components/promise-form";
 
 type Comment = {
   id: string;
@@ -72,12 +73,18 @@ export function PostCard({ post, isAdmin }: Props) {
         </div>
 
         {isAdmin && (
-          <form action={deletePost}>
+          <PromiseForm
+            action={deletePost}
+            loading="Tar bort inlägg..."
+            success="Inlägg borttaget!"
+            error="Kunde inte ta bort inlägg."
+            className="space-y-3"
+          >
             <input type="hidden" name="post_id" value={post.id} />
             <Button variant="destructive" size="sm" type="submit">
               Ta bort
             </Button>
-          </form>
+          </PromiseForm>
         )}
       </CardHeader>
 
@@ -105,8 +112,8 @@ export function PostCard({ post, isAdmin }: Props) {
 
           {showComments && (
             <div className="mt-4 space-y-4">
-              {sortedComments.length > 0 ? (
-                <div className="space-y-2">
+              {sortedComments.length > 0 && (
+                <div className="space-y-2 max-h-80 overflow-y-auto">
                   {sortedComments.map((comment) => (
                     <div key={comment.id} className="rounded-lg bg-muted/40 p-3">
                       <p className="whitespace-pre-wrap text-sm leading-6">
@@ -119,13 +126,15 @@ export function PostCard({ post, isAdmin }: Props) {
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Inga kommentarer ännu.
-                </p>
               )}
 
-              <form action={createComment} className="space-y-3">
+              <PromiseForm
+                action={createComment}
+                loading="Lägger till kommentar..."
+                success="Kommentar tillagd!"
+                error="Kunde inte lägga till kommentar."
+                className="space-y-3"
+              >
                 <input type="hidden" name="post_id" value={post.id} />
                 <Textarea
                   name="body"
@@ -136,7 +145,7 @@ export function PostCard({ post, isAdmin }: Props) {
                 <Button type="submit" variant="secondary">
                   Lägg till kommentar
                 </Button>
-              </form>
+              </PromiseForm>
             </div>
           )}
         </div>

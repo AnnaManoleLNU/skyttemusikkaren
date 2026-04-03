@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
+import { createPost } from "./actions";
+import { PromiseForm } from "@/components/promise-form";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,17 +17,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-type Props = {
-  createPost: (formData: FormData) => Promise<void>;
-};
-
-export function CreatePostDialog({ createPost }: Props) {
+export function CreatePostDialog() {
   const [open, setOpen] = useState(false);
-
-  async function submit(formData: FormData) {
-    await createPost(formData);
-    setOpen(false);
-  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -37,15 +30,20 @@ export function CreatePostDialog({ createPost }: Props) {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader >
+        <DialogHeader>
           <DialogTitle className="text-xl">Skapa nytt inlägg</DialogTitle>
           <DialogDescription>
-            Publicera ett internt meddelande för medlemmarna i
-            Skyttemusikkåren.
+            Publicera ett internt meddelande för medlemmarna i Skyttemusikkåren.
           </DialogDescription>
         </DialogHeader>
 
-        <form action={submit} className="space-y-5">
+        <PromiseForm
+          action={createPost}
+          loading="Skapar inlägg..."
+          success="Inlägg skapat!"
+          error="Kunde inte skapa inlägg."
+          className="space-y-5"
+        >
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium">
               Titel
@@ -83,7 +81,7 @@ export function CreatePostDialog({ createPost }: Props) {
             </Button>
             <Button type="submit">Publicera</Button>
           </DialogFooter>
-        </form>
+        </PromiseForm>
       </DialogContent>
     </Dialog>
   );

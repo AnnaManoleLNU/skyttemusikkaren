@@ -1,12 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/login");
 }
 
 export async function createPost(formData: FormData) {
@@ -16,13 +14,13 @@ export async function createPost(formData: FormData) {
   const body = formData.get("body")?.toString().trim();
 
   if (!title || !body) {
-    throw new Error("Title and body are required");
+    throw new Error("Titel och innehåll krävs.");
   }
 
   const { data: authData } = await supabase.auth.getUser();
 
   if (!authData.user) {
-    throw new Error("Not authenticated");
+    throw new Error("Du är inte inloggad.");
   }
 
   const { error } = await supabase.from("posts").insert({
@@ -32,11 +30,10 @@ export async function createPost(formData: FormData) {
   });
 
   if (error) {
-    console.error("Error creating post:", error);
-    throw new Error("Failed to create post");
+    throw new Error("Kunde inte skapa inlägget.");
   }
 
-  redirect("/members");
+  return { ok: true };
 }
 
 export async function deletePost(formData: FormData) {
@@ -45,23 +42,22 @@ export async function deletePost(formData: FormData) {
   const { data: authData } = await supabase.auth.getUser();
 
   if (!authData.user) {
-    throw new Error("Not authenticated");
+    throw new Error("Du är inte inloggad.");
   }
 
   const postId = formData.get("post_id")?.toString();
 
   if (!postId) {
-    throw new Error("Post ID is required");
+    throw new Error("Post-ID saknas.");
   }
 
   const { error } = await supabase.from("posts").delete().eq("id", postId);
 
   if (error) {
-    console.error("Error deleting post:", error);
-    throw new Error("Failed to delete post");
+    throw new Error("Kunde inte ta bort inlägget.");
   }
 
-  redirect("/members");
+  return { ok: true };
 }
 
 export async function createComment(formData: FormData) {
@@ -71,13 +67,13 @@ export async function createComment(formData: FormData) {
   const body = formData.get("body")?.toString().trim();
 
   if (!postId || !body) {
-    throw new Error("Kommentar saknas");
+    throw new Error("Kommentaren saknas.");
   }
 
   const { data: authData } = await supabase.auth.getUser();
 
   if (!authData.user) {
-    throw new Error("Inte inloggad");
+    throw new Error("Du är inte inloggad.");
   }
 
   const { error } = await supabase.from("comments").insert({
@@ -87,9 +83,8 @@ export async function createComment(formData: FormData) {
   });
 
   if (error) {
-    console.error("Error creating comment:", error);
-    throw new Error("Kunde inte skapa kommentar");
+    throw new Error("Kunde inte skapa kommentaren.");
   }
 
-  redirect("/members");
+  return { ok: true };
 }
