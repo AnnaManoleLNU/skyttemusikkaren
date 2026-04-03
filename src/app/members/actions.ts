@@ -39,6 +39,31 @@ export async function createPost(formData: FormData) {
   redirect("/members");
 }
 
+export async function deletePost(formData: FormData) {
+  const supabase = await createClient();
+
+  const { data: authData } = await supabase.auth.getUser();
+
+  if (!authData.user) {
+    throw new Error("Not authenticated");
+  }
+
+  const postId = formData.get("post_id")?.toString();
+
+  if (!postId) {
+    throw new Error("Post ID is required");
+  }
+
+  const { error } = await supabase.from("posts").delete().eq("id", postId);
+
+  if (error) {
+    console.error("Error deleting post:", error);
+    throw new Error("Failed to delete post");
+  }
+
+  redirect("/members");
+}
+
 export async function createComment(formData: FormData) {
   const supabase = await createClient();
 

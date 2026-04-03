@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { logout, createPost, createComment } from "./actions";
+import { logout, createPost, createComment, deletePost } from "./actions";
 import { Button } from "@/components/ui/button";
 import { CreatePostDialog } from "./CreatePostDialog";
 import {
@@ -23,7 +23,6 @@ type Comment = {
   };
 };
 
-
 export const dynamic = "force-dynamic";
 
 export default async function MembersPage() {
@@ -40,7 +39,7 @@ export default async function MembersPage() {
     .eq("id", data.user.id)
     .single();
 
-  const isUserAdmin = tableUser?.role === "admin";
+  const isAdmin = tableUser?.role === "admin";
 
   const { data: posts, error: postsError } = await supabase
     .from("posts")
@@ -92,7 +91,7 @@ export default async function MembersPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              {isUserAdmin && <CreatePostDialog createPost={createPost} />}
+              {isAdmin && <CreatePostDialog createPost={createPost} />}
 
               <form action={logout}>
                 <Button variant="outline" type="submit">
@@ -103,7 +102,7 @@ export default async function MembersPage() {
           </div>
         </header>
 
-        <section className="p-6 ">
+        <section className="p-2 ">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Inlägg</h2>
@@ -127,6 +126,15 @@ export default async function MembersPage() {
                       Publicerad {formatDate(post.created_at)} av{" "}
                       {post.author?.email ?? "Okänd användare"}
                     </CardDescription>
+
+                    {isAdmin && (
+                      <form action={deletePost}>
+                        <input type="hidden" name="post_id" value={post.id} />
+                        <Button variant="destructive" size="sm" type="submit">
+                          Ta bort
+                        </Button>
+                      </form>
+                    )}
                   </CardHeader>
 
                   <CardContent className="space-y-6">
@@ -146,10 +154,7 @@ export default async function MembersPage() {
                                 new Date(b.created_at).getTime(),
                             )
                             .map((comment: Comment) => (
-                              <div
-                                key={comment.id}
-                                className="c p-2"
-                              >
+                              <div key={comment.id} className="c p-2">
                                 <p className="whitespace-pre-wrap text-sm leading-6">
                                   {comment.body}
                                 </p>
