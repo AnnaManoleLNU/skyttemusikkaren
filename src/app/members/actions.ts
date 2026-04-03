@@ -38,3 +38,33 @@ export async function createPost(formData: FormData) {
 
   redirect("/members");
 }
+
+export async function createComment(formData: FormData) {
+  const supabase = await createClient();
+
+  const postId = formData.get("post_id")?.toString();
+  const body = formData.get("body")?.toString().trim();
+
+  if (!postId || !body) {
+    throw new Error("Kommentar saknas");
+  }
+
+  const { data: authData } = await supabase.auth.getUser();
+
+  if (!authData.user) {
+    throw new Error("Inte inloggad");
+  }
+
+  const { error } = await supabase.from("comments").insert({
+    post_id: postId,
+    body,
+    created_by: authData.user.id,
+  });
+
+  if (error) {
+    console.error("Error creating comment:", error);
+    throw new Error("Kunde inte skapa kommentar");
+  }
+
+  redirect("/members");
+}
