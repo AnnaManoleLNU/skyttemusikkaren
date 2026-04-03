@@ -103,16 +103,8 @@ export default async function MembersPage() {
         </header>
 
         <section className="p-2 ">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-semibold">Inlägg</h2>
-              <p className="text-sm text-muted-foreground">
-                Här visas interna nyheter och information för medlemmar.
-              </p>
-            </div>
-          </div>
 
-          <div className="mt-6 space-y-4">
+          <div className="space-y-2">
             {!posts || posts.length === 0 ? (
               <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
                 Inga inlägg ännu.
@@ -120,7 +112,7 @@ export default async function MembersPage() {
             ) : (
               posts.map((post) => (
                 <Card key={post.id} className="rounded-2xl">
-                  <CardHeader className="pb-3">
+                  <CardHeader >
                     <CardTitle className="text-xl">{post.title}</CardTitle>
                     <CardDescription className="mt-1">
                       Publicerad {formatDate(post.created_at)} av{" "}
@@ -137,16 +129,16 @@ export default async function MembersPage() {
                     )}
                   </CardHeader>
 
-                  <CardContent className="space-y-6">
-                    <div className="whitespace-pre-wrap text-sm leading-7 text-foreground/90">
+                  <CardContent className="space-y-2">
+                    <div className="whitespace-pre-wrap text-sm leading-7 font-semibold">
                       {post.body}
                     </div>
 
-                    <div className="space-y-4 border-t pt-4">
-                      <h3 className="text-sm font-semibold">Kommentarer</h3>
+                    <div className="space-y-1 border-t pt-4">
+                      <h3 className="text-sm">Kommentarer</h3>
 
-                      {post.comments && post.comments.length > 0 ? (
-                        <div className="space-y-3">
+                      {post.comments && post.comments.length > 0 && (
+                        <div className="space-y-2">
                           {[...post.comments]
                             .sort(
                               (a, b) =>
@@ -155,7 +147,7 @@ export default async function MembersPage() {
                             )
                             .map((comment: Comment) => (
                               <div key={comment.id} className="c p-2">
-                                <p className="whitespace-pre-wrap text-sm leading-6">
+                                <p className="whitespace-pre-wrap text-sm leading-6 font-semibold">
                                   {comment.body}
                                 </p>
                                 <p className="mt-2 text-xs text-muted-foreground">
@@ -165,10 +157,6 @@ export default async function MembersPage() {
                               </div>
                             ))}
                         </div>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          Inga kommentarer ännu.
-                        </p>
                       )}
 
                       <form action={createComment} className="space-y-3">

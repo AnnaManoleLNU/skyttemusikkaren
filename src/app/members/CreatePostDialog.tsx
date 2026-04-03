@@ -37,7 +37,7 @@ export function CreatePostDialog({ createPost }: Props) {
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader className="space-y-2">
+        <DialogHeader >
           <DialogTitle className="text-xl">Skapa nytt inlägg</DialogTitle>
           <DialogDescription>
             Publicera ett internt meddelande för medlemmarna i
