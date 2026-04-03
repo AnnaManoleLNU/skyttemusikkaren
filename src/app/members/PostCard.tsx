@@ -21,6 +21,7 @@ type Comment = {
   author?: {
     id: string;
     email: string;
+    username?: string;
   };
 };
 
@@ -32,6 +33,7 @@ type Post = {
   author?: {
     id: string;
     email: string;
+    username?: string;
   };
   comments?: Comment[];
 };
@@ -65,7 +67,7 @@ export function PostCard({ post, isAdmin }: Props) {
           <CardTitle className="text-xl">{post.title}</CardTitle>
           <CardDescription className="mt-1">
             Publicerad {formatDate(post.created_at)} av{" "}
-            {post.author?.email ?? "Okänd användare"}
+            {post.author?.username ?? "Okänd användare"}
           </CardDescription>
         </div>
 
@@ -111,7 +113,7 @@ export function PostCard({ post, isAdmin }: Props) {
                         {comment.body}
                       </p>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        {comment.author?.email ?? "Okänd användare"} •{" "}
+                        {comment.author?.username ?? "Okänd användare"} •{" "}
                         {formatDate(comment.created_at)}
                       </p>
                     </div>

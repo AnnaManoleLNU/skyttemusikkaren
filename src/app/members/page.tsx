@@ -30,19 +30,21 @@ export default async function MembersPage() {
       `
     *,
     author:users!posts_created_by_fkey (
-      id,
-      email
-    ),
-    comments (
-      id,
-      body,
-      created_at,
-      created_by,
-      author:users!comments_created_by_fkey (
-        id,
-        email
-      )
-    )
+  id,
+  email,
+  username
+),
+comments (
+  id,
+  body,
+  created_at,
+  created_by,
+  author:users!comments_created_by_fkey (
+    id,
+    email,
+    username
+  )
+)
   `,
     )
     .order("created_at", { ascending: false });
@@ -62,7 +64,7 @@ export default async function MembersPage() {
                 Skyttemusikkåren
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
-                Inloggad som {data.user.email}
+                Inloggad som {tableUser.username ?? tableUser.email}
               </p>
             </div>
 
