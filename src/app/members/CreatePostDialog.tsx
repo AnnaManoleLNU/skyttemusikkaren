@@ -42,9 +42,10 @@ export function CreatePostDialog() {
           loading="Skapar inlägg..."
           success="Inlägg skapat!"
           error="Kunde inte skapa inlägg."
-          className="space-y-5"
+          className="space-y-3"
+          onSuccess={() => setOpen(false)}
         >
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor="title" className="text-sm font-medium">
               Titel
             </label>
@@ -57,7 +58,7 @@ export function CreatePostDialog() {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor="body" className="text-sm font-medium">
               Inlägg
             </label>

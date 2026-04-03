@@ -11,6 +11,7 @@ type Props = {
   success: string;
   error: string;
   className?: string;
+  onSuccess?: () => void;
 };
 
 export function PromiseForm({
@@ -20,6 +21,7 @@ export function PromiseForm({
   success,
   error,
   className,
+  onSuccess,
 }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -39,6 +41,7 @@ export function PromiseForm({
             success: () => {
               form.reset();
               router.refresh();
+              onSuccess?.();
               return success;
             },
             error: (err) => {
@@ -48,9 +51,7 @@ export function PromiseForm({
         });
       }}
     >
-      <fieldset disabled={isPending} className="contents">
-        {children}
-      </fieldset>
+      {children}
     </form>
   );
 }

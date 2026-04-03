@@ -78,7 +78,7 @@ export function PostCard({ post, isAdmin }: Props) {
             loading="Tar bort inlägg..."
             success="Inlägg borttaget!"
             error="Kunde inte ta bort inlägg."
-            className="space-y-3"
+            //className="space-y-3"
           >
             <input type="hidden" name="post_id" value={post.id} />
             <Button variant="destructive" size="sm" type="submit">
@@ -133,7 +133,7 @@ export function PostCard({ post, isAdmin }: Props) {
                 loading="Lägger till kommentar..."
                 success="Kommentar tillagd!"
                 error="Kunde inte lägga till kommentar."
-                className="space-y-3"
+                className="space-y-2"
               >
                 <input type="hidden" name="post_id" value={post.id} />
                 <Textarea
